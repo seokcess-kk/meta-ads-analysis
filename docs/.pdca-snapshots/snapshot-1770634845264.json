@@ -1,0 +1,586 @@
+{
+  "timestamp": "2026-02-09T11:00:45.256Z",
+  "reason": "compaction",
+  "status": {
+    "version": "2.0",
+    "lastUpdated": "2026-02-09T10:38:52.939Z",
+    "activeFeatures": [
+      "meta-ad-analyzer",
+      "backend",
+      "core",
+      "schemas",
+      "alembic",
+      "versions",
+      "workers",
+      "api",
+      "v1",
+      "frontend",
+      "ads",
+      "collect",
+      "layout",
+      "ui",
+      "stores"
+    ],
+    "primaryFeature": "meta-ad-analyzer",
+    "features": {
+      "meta-ad-analyzer": {
+        "phase": "do",
+        "matchRate": null,
+        "iterationCount": 0,
+        "startedAt": "2026-02-09T10:30:00.000Z",
+        "documents": {
+          "plan": "docs/01-plan/features/meta-ad-analyzer.plan.md",
+          "design": "docs/02-design/features/meta-ad-analyzer.design.md"
+        }
+      },
+      "backend": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:16:26.137Z",
+          "lastUpdated": "2026-02-09T10:24:05.806Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\app\\main.py"
+      },
+      "core": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:16:42.964Z",
+          "lastUpdated": "2026-02-09T10:22:41.710Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\app\\core\\claude.py"
+      },
+      "schemas": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:17:39.282Z",
+          "lastUpdated": "2026-02-09T10:18:10.074Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\app\\schemas\\analysis.py"
+      },
+      "alembic": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:18:32.077Z",
+          "lastUpdated": "2026-02-09T10:18:32.077Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\alembic\\env.py"
+      },
+      "versions": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:19:06.786Z",
+          "lastUpdated": "2026-02-09T10:19:06.787Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\alembic\\versions\\001_initial_schema.py"
+      },
+      "workers": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:20:06.540Z",
+          "lastUpdated": "2026-02-09T10:23:29.820Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\app\\workers\\analyze_task.py"
+      },
+      "api": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:20:54.036Z",
+          "lastUpdated": "2026-02-09T10:21:03.763Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\app\\api\\deps.py"
+      },
+      "v1": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:21:11.733Z",
+          "lastUpdated": "2026-02-09T10:23:51.029Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\backend\\app\\api\\v1\\analysis.py"
+      },
+      "frontend": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:25:13.670Z",
+          "lastUpdated": "2026-02-09T10:38:49.497Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\frontend\\src\\types\\index.ts"
+      },
+      "ads": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:28:26.512Z",
+          "lastUpdated": "2026-02-09T10:29:54.692Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\frontend\\src\\components\\ads\\index.ts"
+      },
+      "collect": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:29:51.397Z",
+          "lastUpdated": "2026-02-09T10:29:51.397Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\frontend\\src\\app\\collect\\page.tsx"
+      },
+      "layout": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:37:32.635Z",
+          "lastUpdated": "2026-02-09T10:37:37.249Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\frontend\\src\\components\\layout\\index.ts"
+      },
+      "ui": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:38:01.219Z",
+          "lastUpdated": "2026-02-09T10:38:09.545Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\frontend\\src\\components\\ui\\index.ts"
+      },
+      "stores": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-09T10:38:51.192Z",
+          "lastUpdated": "2026-02-09T10:38:52.939Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\meta-ads-analysis\\frontend\\src\\stores\\index.ts"
+      }
+    },
+    "pipeline": {
+      "currentPhase": 3,
+      "level": "Dynamic",
+      "phaseHistory": [
+        "plan",
+        "design"
+      ]
+    },
+    "session": {
+      "startedAt": "2026-02-09T09:54:11.540Z",
+      "onboardingCompleted": true,
+      "lastActivity": "2026-02-09T10:38:52.939Z"
+    },
+    "history": [
+      {
+        "action": "plan",
+        "feature": "meta-ad-analyzer",
+        "timestamp": "2026-02-09T10:30:00.000Z"
+      },
+      {
+        "action": "design",
+        "feature": "meta-ad-analyzer",
+        "timestamp": "2026-02-09T11:00:00.000Z"
+      },
+      {
+        "action": "do",
+        "feature": "meta-ad-analyzer",
+        "timestamp": "2026-02-09T11:30:00.000Z"
+      },
+      {
+        "timestamp": "2026-02-09T10:16:26.137Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:16:36.750Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:16:42.964Z",
+        "feature": "core",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:16:52.534Z",
+        "feature": "core",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:16:59.909Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:17:30.554Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:17:39.282Z",
+        "feature": "schemas",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:17:56.211Z",
+        "feature": "schemas",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:18:10.074Z",
+        "feature": "schemas",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:18:32.077Z",
+        "feature": "alembic",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:19:06.787Z",
+        "feature": "versions",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:19:15.378Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:19:42.158Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:19:58.030Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:20:06.540Z",
+        "feature": "workers",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:20:17.520Z",
+        "feature": "workers",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:20:45.429Z",
+        "feature": "workers",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:20:54.036Z",
+        "feature": "api",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:21:03.763Z",
+        "feature": "api",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:21:11.733Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:21:20.711Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:21:57.857Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:22:41.710Z",
+        "feature": "core",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:23:11.988Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:23:29.820Z",
+        "feature": "workers",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:23:51.029Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:24:05.806Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:25:13.670Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:25:27.944Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:25:37.931Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:26:22.912Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:27:52.607Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:27:54.259Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:27:55.887Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:28:26.512Z",
+        "feature": "ads",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:28:28.098Z",
+        "feature": "ads",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:28:29.714Z",
+        "feature": "ads",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:29:17.074Z",
+        "feature": "ads",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:29:18.801Z",
+        "feature": "ads",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:29:51.397Z",
+        "feature": "collect",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:29:54.692Z",
+        "feature": "ads",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:37:32.635Z",
+        "feature": "layout",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:37:34.138Z",
+        "feature": "layout",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:37:35.686Z",
+        "feature": "layout",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:37:37.249Z",
+        "feature": "layout",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:01.219Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:02.889Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:04.537Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:06.196Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:07.848Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:09.545Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:25.564Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:47.811Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:49.497Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:51.192Z",
+        "feature": "stores",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-09T10:38:52.939Z",
+        "feature": "stores",
+        "phase": "do",
+        "action": "updated"
+      }
+    ]
+  }
+}
