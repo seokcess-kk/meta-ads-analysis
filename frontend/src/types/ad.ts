@@ -14,6 +14,9 @@ export interface Ad {
   has_image_analysis: boolean;
   has_copy_analysis: boolean;
   collected_at: string;
+  // Success score fields
+  success_score: number | null;
+  is_successful: boolean;
 }
 
 export interface AdDetail extends Ad {
@@ -28,6 +31,7 @@ export interface AdDetail extends Ad {
   target_country: string;
   image_analysis: ImageAnalysis | null;
   copy_analysis: CopyAnalysis | null;
+  success_score_detail: SuccessScoreDetail | null;
 }
 
 export interface ImageAnalysis {
@@ -79,6 +83,15 @@ export interface CopyAnalysis {
   keywords: string[];
   regions: string[];
   analyzed_at: string;
+}
+
+export interface SuccessScoreDetail {
+  duration_score: number;
+  impressions_score: number;
+  total_score: number;
+  percentile: number;
+  is_successful: boolean;
+  calculated_at: string;
 }
 
 export interface AdListResponse {

@@ -8,6 +8,7 @@ from sqlalchemy import (
     Boolean,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     String,
@@ -60,6 +61,10 @@ class AdRaw(Base):
         "AdsAnalysisCopy", back_populates="ad", uselist=False, lazy="joined",
         cascade="all, delete-orphan", passive_deletes=True
     )
+    success_score: Mapped[Optional["AdSuccessScore"]] = relationship(
+        "AdSuccessScore", back_populates="ad", uselist=False, lazy="joined",
+        cascade="all, delete-orphan", passive_deletes=True
+    )
 
     @property
     def duration_days(self) -> int:
@@ -78,6 +83,11 @@ class AdRaw(Base):
     def has_copy_analysis(self) -> bool:
         """Check if copy analysis exists."""
         return self.copy_analysis is not None
+
+    @property
+    def has_success_score(self) -> bool:
+        """Check if success score exists."""
+        return self.success_score is not None
 
 
 class AdsAnalysisImage(Base):
@@ -179,6 +189,116 @@ class AdsAnalysisCopy(Base):
 
     # Relationship
     ad: Mapped["AdRaw"] = relationship("AdRaw", back_populates="copy_analysis")
+
+
+class AdSuccessScore(Base):
+    """Success score for ads based on duration and impressions."""
+
+    __tablename__ = "ads_success_score"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    ad_id: Mapped[str] = mapped_column(
+        String(255),
+        ForeignKey("ads_raw.ad_id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+    duration_score: Mapped[float] = mapped_column(Float, default=0)
+    impressions_score: Mapped[float] = mapped_column(Float, default=0)
+    total_score: Mapped[float] = mapped_column(Float, default=0)
+    percentile: Mapped[int] = mapped_column(Integer, default=0)
+    is_successful: Mapped[bool] = mapped_column(Boolean, default=False)
+    calculated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    ad: Mapped["AdRaw"] = relationship("AdRaw", back_populates="success_score")
+
+
+class PatternAnalysis(Base):
+    """Pattern analysis results comparing successful vs general ads."""
+
+    __tablename__ = "pattern_analysis"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    analysis_type: Mapped[str] = mapped_column(String(50), nullable=False)  # 'image' | 'copy'
+    field_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    field_value: Mapped[str] = mapped_column(String(255), nullable=False)
+    successful_count: Mapped[int] = mapped_column(Integer, default=0)
+    successful_ratio: Mapped[float] = mapped_column(Float, default=0)
+    general_count: Mapped[int] = mapped_column(Integer, default=0)
+    general_ratio: Mapped[float] = mapped_column(Float, default=0)
+    lift: Mapped[float] = mapped_column(Float, default=0)
+    is_pattern: Mapped[bool] = mapped_column(Boolean, default=False)
+    industry: Mapped[Optional[str]] = mapped_column(String(50), index=True)
+    analyzed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class PatternInsight(Base):
+    """AI-generated insights from pattern analysis."""
+
+    __tablename__ = "pattern_insights"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    insight_type: Mapped[str] = mapped_column(String(50), nullable=False)  # 'formula' | 'recommendation'
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    supporting_patterns: Mapped[Optional[dict]] = mapped_column(JSON)
+    confidence: Mapped[float] = mapped_column(Float, default=0)
+    industry: Mapped[Optional[str]] = mapped_column(String(50), index=True)
+    generated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class MonitoringKeyword(Base):
+    """Keywords for automatic monitoring."""
+
+    __tablename__ = "monitoring_keywords"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    keyword: Mapped[str] = mapped_column(String(255), nullable=False)
+    industry: Mapped[str] = mapped_column(String(50), nullable=False)
+    country: Mapped[str] = mapped_column(String(10), default="KR")
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    schedule_cron: Mapped[str] = mapped_column(String(50), default="0 9 * * *")
+    last_run_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    next_run_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    runs: Mapped[List["MonitoringRun"]] = relationship(
+        "MonitoringRun", back_populates="keyword", cascade="all, delete-orphan"
+    )
+
+
+class MonitoringRun(Base):
+    """Execution history for monitoring keywords."""
+
+    __tablename__ = "monitoring_runs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    keyword_id: Mapped[int] = mapped_column(Integer, ForeignKey("monitoring_keywords.id"), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="pending")
+    new_ads_count: Mapped[int] = mapped_column(Integer, default=0)
+    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    error_message: Mapped[Optional[str]] = mapped_column(Text)
+
+    # Relationship
+    keyword: Mapped["MonitoringKeyword"] = relationship("MonitoringKeyword", back_populates="runs")
+
+
+class Notification(Base):
+    """User notifications."""
+
+    __tablename__ = "notifications"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    type: Mapped[str] = mapped_column(String(50), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    extra_data: Mapped[Optional[dict]] = mapped_column(JSON)
+    is_read: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class CollectJob(Base):

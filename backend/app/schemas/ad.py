@@ -46,6 +46,9 @@ class AdList(BaseModel):
     has_image_analysis: bool = False
     has_copy_analysis: bool = False
     collected_at: datetime
+    # Success score fields
+    success_score: Optional[float] = None
+    is_successful: bool = False
 
     class Config:
         from_attributes = True
@@ -80,6 +83,20 @@ class CopyAnalysisSummary(BaseModel):
         from_attributes = True
 
 
+class SuccessScoreSummary(BaseModel):
+    """Summary of success score for detail view."""
+
+    duration_score: float
+    impressions_score: float
+    total_score: float
+    percentile: int
+    is_successful: bool
+    calculated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class AdDetail(AdList):
     """Schema for Ad detail view with analysis."""
 
@@ -94,6 +111,7 @@ class AdDetail(AdList):
     target_country: str = "KR"
     image_analysis: Optional[ImageAnalysisSummary] = None
     copy_analysis: Optional[CopyAnalysisSummary] = None
+    success_score_detail: Optional[SuccessScoreSummary] = None
 
     class Config:
         from_attributes = True

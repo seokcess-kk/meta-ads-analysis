@@ -1,15 +1,34 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { api } from '@/lib/api';
 
 const navItems = [
   { href: '/ads', label: 'Ad Gallery' },
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/monitoring', label: 'Monitoring' },
   { href: '/collect', label: 'Collect Ads' },
 ];
 
 export function Header() {
   const pathname = usePathname();
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    const loadNotifications = async () => {
+      try {
+        const { unread_count } = await api.getNotificationCount();
+        setNotificationCount(unread_count);
+      } catch (err) {
+        // Silently fail
+      }
+    };
+    loadNotifications();
+    const interval = setInterval(loadNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -50,7 +69,22 @@ export function Header() {
           ))}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <nav className="flex items-center">
+          <nav className="flex items-center gap-2">
+            {/* Notification Bell */}
+            <Link
+              href="/monitoring"
+              className="relative inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              {notificationCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-4 w-4 text-xs bg-red-500 text-white rounded-full flex items-center justify-center">
+                  {notificationCount > 9 ? '9+' : notificationCount}
+                </span>
+              )}
+              <span className="sr-only">Notifications</span>
+            </Link>
             <a
               href="https://github.com"
               target="_blank"

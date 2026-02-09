@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.api.deps import get_db
-from app.models.ad import AdRaw, CollectJob
+from app.models.ad import AdRaw, AdSuccessScore, CollectJob
 from app.schemas.ad import (
     AdDetail,
     AdList,
@@ -18,8 +18,10 @@ from app.schemas.ad import (
     CollectJobStatus,
     CopyAnalysisSummary,
     ImageAnalysisSummary,
+    SuccessScoreSummary,
 )
 from app.workers.collect_task import collect_ads
+from app.services.screenshot import capture_screenshot
 
 router = APIRouter()
 
@@ -96,6 +98,7 @@ async def list_ads(
     region: Optional[str] = Query(None, description="Filter by region"),
     min_duration: Optional[int] = Query(None, ge=0, description="Minimum duration in days"),
     max_duration: Optional[int] = Query(None, ge=0, description="Maximum duration in days"),
+    successful_only: bool = Query(False, description="Filter only successful ads (top 20%)"),
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(20, ge=1, le=100, description="Items per page"),
     sort: str = Query("-duration_days", description="Sort field (prefix with - for desc)"),
@@ -109,6 +112,7 @@ async def list_ads(
     query = select(AdRaw).options(
         selectinload(AdRaw.image_analysis),
         selectinload(AdRaw.copy_analysis),
+        selectinload(AdRaw.success_score),
     )
 
     # Apply filters
@@ -116,6 +120,8 @@ async def list_ads(
         query = query.where(AdRaw.industry == industry)
     if region:
         query = query.where(AdRaw.region == region)
+    if successful_only:
+        query = query.join(AdSuccessScore).where(AdSuccessScore.is_successful == True)
 
     # Count query
     count_query = select(func.count()).select_from(AdRaw)
@@ -123,6 +129,8 @@ async def list_ads(
         count_query = count_query.where(AdRaw.industry == industry)
     if region:
         count_query = count_query.where(AdRaw.region == region)
+    if successful_only:
+        count_query = count_query.join(AdSuccessScore).where(AdSuccessScore.is_successful == True)
 
     # Get total count
     total_result = await db.execute(count_query)
@@ -184,6 +192,8 @@ async def list_ads(
             has_image_analysis=ad.has_image_analysis,
             has_copy_analysis=ad.has_copy_analysis,
             collected_at=ad.collected_at,
+            success_score=ad.success_score.total_score if ad.success_score else None,
+            is_successful=ad.success_score.is_successful if ad.success_score else False,
         )
         for ad in ads
     ]
@@ -230,6 +240,7 @@ async def get_ad_detail(
         .options(
             selectinload(AdRaw.image_analysis),
             selectinload(AdRaw.copy_analysis),
+            selectinload(AdRaw.success_score),
         )
         .where(AdRaw.ad_id == ad_id)
     )
@@ -297,6 +308,19 @@ async def get_ad_detail(
             analyzed_at=ca.analyzed_at,
         )
 
+    # Build success score summary
+    success_score_detail = None
+    if ad.success_score:
+        ss = ad.success_score
+        success_score_detail = SuccessScoreSummary(
+            duration_score=ss.duration_score,
+            impressions_score=ss.impressions_score,
+            total_score=ss.total_score,
+            percentile=ss.percentile,
+            is_successful=ss.is_successful,
+            calculated_at=ss.calculated_at,
+        )
+
     return AdDetail(
         id=ad.id,
         ad_id=ad.ad_id,
@@ -324,4 +348,72 @@ async def get_ad_detail(
         collected_at=ad.collected_at,
         image_analysis=image_analysis,
         copy_analysis=copy_analysis,
+        success_score=ad.success_score.total_score if ad.success_score else None,
+        is_successful=ad.success_score.is_successful if ad.success_score else False,
+        success_score_detail=success_score_detail,
     )
+
+
+@router.post("/{ad_id}/screenshot")
+async def capture_ad_screenshot(
+    ad_id: str,
+    db: AsyncSession = Depends(get_db),
+):
+    """Capture screenshot of an ad's render page."""
+    result = await db.execute(
+        select(AdRaw).where(AdRaw.ad_id == ad_id)
+    )
+    ad = result.scalar_one_or_none()
+
+    if not ad:
+        raise HTTPException(status_code=404, detail="Ad not found")
+
+    if not ad.image_url or '/ads/archive/render_ad/' not in ad.image_url:
+        raise HTTPException(status_code=400, detail="No render URL available")
+
+    # Capture screenshot
+    screenshot_path = await capture_screenshot(ad.image_url, ad.ad_id)
+
+    if not screenshot_path:
+        raise HTTPException(status_code=500, detail="Failed to capture screenshot")
+
+    # Update ad with local image path
+    ad.image_s3_path = screenshot_path
+    await db.commit()
+
+    return {"screenshot_url": screenshot_path}
+
+
+@router.post("/screenshots/batch")
+async def capture_screenshots_batch(
+    db: AsyncSession = Depends(get_db),
+    limit: int = Query(10, ge=1, le=50, description="Number of ads to process"),
+):
+    """Capture screenshots for ads that don't have one yet."""
+    # Find ads with render_ad URLs but no screenshot
+    result = await db.execute(
+        select(AdRaw)
+        .where(AdRaw.image_url.ilike('%/ads/archive/render_ad/%'))
+        .where(AdRaw.image_s3_path.is_(None))
+        .limit(limit)
+    )
+    ads = result.scalars().all()
+
+    captured = 0
+    failed = 0
+
+    for ad in ads:
+        screenshot_path = await capture_screenshot(ad.image_url, ad.ad_id)
+        if screenshot_path:
+            ad.image_s3_path = screenshot_path
+            captured += 1
+        else:
+            failed += 1
+
+    await db.commit()
+
+    return {
+        "processed": len(ads),
+        "captured": captured,
+        "failed": failed,
+    }

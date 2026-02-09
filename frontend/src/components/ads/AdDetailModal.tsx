@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import Image from 'next/image';
-import { AdDetail } from '@/lib/api';
+import { api, getAdImageUrl } from '@/lib/api';
 import { useAd, useAnalyze } from '@/hooks/useAds';
 
 interface AdDetailModalProps {
@@ -13,6 +13,7 @@ interface AdDetailModalProps {
 export function AdDetailModal({ adId, onClose }: AdDetailModalProps) {
   const { ad, isLoading, mutate } = useAd(adId);
   const { analyzeImage, analyzeCopy } = useAnalyze();
+  const [isCapturing, setIsCapturing] = useState(false);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -52,7 +53,24 @@ export function AdDetailModal({ adId, onClose }: AdDetailModalProps) {
     }
   };
 
+  const handleCaptureScreenshot = async () => {
+    if (!adId) return;
+    setIsCapturing(true);
+    try {
+      await api.captureScreenshot(adId);
+      setTimeout(() => mutate(), 1000);
+    } catch (error) {
+      console.error('Screenshot capture failed:', error);
+      alert('스크린샷 캡처에 실패했습니다.');
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
   if (!adId) return null;
+
+  const imageUrl = ad ? getAdImageUrl(ad) : null;
+  const isRenderAdUrl = ad?.image_url?.includes('/ads/archive/render_ad/') && !ad?.image_s3_path;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -78,17 +96,30 @@ export function AdDetailModal({ adId, onClose }: AdDetailModalProps) {
           <div className="flex flex-col lg:flex-row h-full max-h-[90vh]">
             {/* Image Section */}
             <div className="lg:w-1/2 bg-muted">
-              <div className="relative aspect-square lg:h-full">
-                {ad.image_url ? (
+              <div className="relative aspect-square lg:h-full overflow-hidden">
+                {imageUrl && !isRenderAdUrl ? (
                   <Image
-                    src={ad.image_url}
+                    src={imageUrl}
                     alt={ad.page_name || 'Ad image'}
                     fill
                     className="object-contain"
+                    unoptimized={imageUrl.includes('localhost')}
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full text-muted-foreground">
-                    No Image
+                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                    <svg className="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {isRenderAdUrl && (
+                      <button
+                        onClick={handleCaptureScreenshot}
+                        disabled={isCapturing}
+                        className="px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                      >
+                        {isCapturing ? '캡처 중...' : '스크린샷 캡처'}
+                      </button>
+                    )}
+                    {!imageUrl && <span>No Image</span>}
                   </div>
                 )}
               </div>
@@ -104,6 +135,41 @@ export function AdDetailModal({ adId, onClose }: AdDetailModalProps) {
                     Ad ID: {ad.ad_id}
                   </p>
                 </div>
+
+                {/* Success Score Badge */}
+                {ad.success_score_detail && (
+                  <div className={`p-4 rounded-lg ${ad.is_successful ? 'bg-yellow-50 border border-yellow-200' : 'bg-muted'}`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {ad.is_successful && (
+                          <svg className="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        )}
+                        <span className="font-semibold">
+                          {ad.is_successful ? '성공 광고' : '일반 광고'}
+                        </span>
+                      </div>
+                      <span className="text-2xl font-bold">
+                        {ad.success_score_detail.total_score.toFixed(0)}점
+                      </span>
+                    </div>
+                    <div className="mt-3 grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">집행기간 점수</span>
+                        <div className="font-medium">{ad.success_score_detail.duration_score.toFixed(1)}</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">노출 점수</span>
+                        <div className="font-medium">{ad.success_score_detail.impressions_score.toFixed(1)}</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">상위</span>
+                        <div className="font-medium">{100 - ad.success_score_detail.percentile}%</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Basic Info */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -139,11 +205,12 @@ export function AdDetailModal({ adId, onClose }: AdDetailModalProps) {
                 </div>
 
                 {/* Analysis Actions */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={handleAnalyzeImage}
-                    disabled={ad.has_image_analysis}
+                    disabled={ad.has_image_analysis || !ad.image_s3_path}
                     className="px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={!ad.image_s3_path ? '스크린샷 캡처 필요' : ''}
                   >
                     {ad.has_image_analysis ? '이미지 분석 완료' : '이미지 분석'}
                   </button>
