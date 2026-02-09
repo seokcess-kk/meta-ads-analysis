@@ -109,6 +109,15 @@ async def _collect_ads_async(
                             )
                             ad_data["image_url"] = ad_data["ad_snapshot_url"]
 
+                    # Helper to convert to int safely
+                    def to_int(val):
+                        if val is None:
+                            return None
+                        try:
+                            return int(val)
+                        except (ValueError, TypeError):
+                            return None
+
                     # Create ad record
                     ad = AdRaw(
                         ad_id=ad_data["ad_id"],
@@ -124,10 +133,10 @@ async def _collect_ads_async(
                         stop_date=ad_data.get("stop_date"),
                         platforms=ad_data.get("platforms", []),
                         currency=ad_data.get("currency"),
-                        spend_lower=ad_data.get("spend_lower"),
-                        spend_upper=ad_data.get("spend_upper"),
-                        impressions_lower=ad_data.get("impressions_lower"),
-                        impressions_upper=ad_data.get("impressions_upper"),
+                        spend_lower=to_int(ad_data.get("spend_lower")),
+                        spend_upper=to_int(ad_data.get("spend_upper")),
+                        impressions_lower=to_int(ad_data.get("impressions_lower")),
+                        impressions_upper=to_int(ad_data.get("impressions_upper")),
                         industry=industry,
                         image_url=ad_data.get("image_url"),
                         image_s3_path=image_s3_path,
