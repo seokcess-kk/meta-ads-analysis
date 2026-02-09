@@ -166,6 +166,10 @@ export const api = {
     return fetchAPI(`/api/v1/ads/${adId}`);
   },
 
+  async deleteAd(adId: string): Promise<void> {
+    await fetch(`${API_URL}/api/v1/ads/${adId}`, { method: 'DELETE' });
+  },
+
   // Collection
   async startCollection(data: {
     keywords: string[];

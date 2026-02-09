@@ -53,10 +53,12 @@ class AdRaw(Base):
 
     # Relationships
     image_analysis: Mapped[Optional["AdsAnalysisImage"]] = relationship(
-        "AdsAnalysisImage", back_populates="ad", uselist=False, lazy="joined"
+        "AdsAnalysisImage", back_populates="ad", uselist=False, lazy="joined",
+        cascade="all, delete-orphan", passive_deletes=True
     )
     copy_analysis: Mapped[Optional["AdsAnalysisCopy"]] = relationship(
-        "AdsAnalysisCopy", back_populates="ad", uselist=False, lazy="joined"
+        "AdsAnalysisCopy", back_populates="ad", uselist=False, lazy="joined",
+        cascade="all, delete-orphan", passive_deletes=True
     )
 
     @property

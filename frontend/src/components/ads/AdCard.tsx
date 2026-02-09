@@ -6,16 +6,24 @@ import { Ad } from '@/lib/api';
 interface AdCardProps {
   ad: Ad;
   onClick?: (ad: Ad) => void;
+  onDelete?: (ad: Ad) => void;
 }
 
-export function AdCard({ ad, onClick }: AdCardProps) {
+export function AdCard({ ad, onClick, onDelete }: AdCardProps) {
   const handleClick = () => {
     onClick?.(ad);
   };
 
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm(`"${ad.page_name || 'Unknown'}" 광고를 삭제하시겠습니까?`)) {
+      onDelete?.(ad);
+    }
+  };
+
   return (
     <div
-      className="group cursor-pointer rounded-lg border bg-card overflow-hidden transition-shadow hover:shadow-lg"
+      className="group cursor-pointer rounded-lg border bg-card overflow-hidden transition-shadow hover:shadow-lg relative"
       onClick={handleClick}
     >
       <div className="relative aspect-square bg-muted">
@@ -44,6 +52,19 @@ export function AdCard({ ad, onClick }: AdCardProps) {
             </span>
           )}
         </div>
+        {onDelete && (
+          <button
+            onClick={handleDelete}
+            className="absolute top-2 left-2 w-7 h-7 flex items-center justify-center bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+            title="삭제"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            </svg>
+          </button>
+        )}
       </div>
       <div className="p-4">
         <h3 className="font-semibold text-sm truncate group-hover:text-primary">

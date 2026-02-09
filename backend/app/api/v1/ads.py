@@ -199,6 +199,26 @@ async def list_ads(
     )
 
 
+@router.delete("/{ad_id}", status_code=204)
+async def delete_ad(
+    ad_id: str,
+    db: AsyncSession = Depends(get_db),
+):
+    """Delete an ad and its associated analysis data."""
+    result = await db.execute(
+        select(AdRaw).where(AdRaw.ad_id == ad_id)
+    )
+    ad = result.scalar_one_or_none()
+
+    if not ad:
+        raise HTTPException(status_code=404, detail="Ad not found")
+
+    await db.delete(ad)
+    await db.commit()
+
+    return None
+
+
 @router.get("/{ad_id}", response_model=AdDetail)
 async def get_ad_detail(
     ad_id: str,

@@ -7,9 +7,10 @@ interface AdGridProps {
   ads: Ad[];
   isLoading?: boolean;
   onAdClick?: (ad: Ad) => void;
+  onAdDelete?: (ad: Ad) => void;
 }
 
-export function AdGrid({ ads, isLoading, onAdClick }: AdGridProps) {
+export function AdGrid({ ads, isLoading, onAdClick, onAdDelete }: AdGridProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -44,7 +45,7 @@ export function AdGrid({ ads, isLoading, onAdClick }: AdGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {ads.map((ad) => (
-        <AdCard key={ad.id} ad={ad} onClick={onAdClick} />
+        <AdCard key={ad.id} ad={ad} onClick={onAdClick} onDelete={onAdDelete} />
       ))}
     </div>
   );

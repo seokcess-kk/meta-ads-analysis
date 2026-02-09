@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Ad } from '@/lib/api';
+import { Ad, api } from '@/lib/api';
 import { useAds } from '@/hooks/useAds';
 import { AdGrid } from '@/components/ads/AdGrid';
 import { AdFilter } from '@/components/ads/AdFilter';
@@ -18,7 +18,7 @@ export default function AdsPage() {
 
   const [selectedAdId, setSelectedAdId] = useState<string | null>(null);
 
-  const { ads, total, page, pages, isLoading } = useAds({
+  const { ads, total, page, pages, isLoading, mutate } = useAds({
     ...filters,
     limit: 20,
   });
@@ -44,6 +44,16 @@ export default function AdsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  const handleAdDelete = useCallback(async (ad: Ad) => {
+    try {
+      await api.deleteAd(ad.ad_id);
+      mutate();
+    } catch (error) {
+      console.error('Failed to delete ad:', error);
+      alert('광고 삭제에 실패했습니다.');
+    }
+  }, [mutate]);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -63,7 +73,7 @@ export default function AdsPage() {
         </p>
       </div>
 
-      <AdGrid ads={ads} isLoading={isLoading} onAdClick={handleAdClick} />
+      <AdGrid ads={ads} isLoading={isLoading} onAdClick={handleAdClick} onAdDelete={handleAdDelete} />
 
       {/* Pagination */}
       {pages > 1 && (
